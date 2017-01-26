@@ -9,7 +9,4 @@ import scrapy
 
 
 class WikipediaPage(scrapy.Item):
-    title = scrapy.Field()
-    brief = scrapy.Field()
-    text = scrapy.Field()
     pass
