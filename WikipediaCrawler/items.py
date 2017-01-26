@@ -8,7 +8,8 @@
 import scrapy
 
 
-class WikipediacrawlerItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
+class WikipediaPage(scrapy.Item):
+    title = scrapy.Field()
+    brief = scrapy.Field()
+    text = scrapy.Field()
     pass
