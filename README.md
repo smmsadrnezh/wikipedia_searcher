@@ -12,4 +12,4 @@ This plugin is based on [Scrapy](#). So install these items with pip.
 How to use
 =========
 
-`scrapy crawl wikipedia`
+`scrapy crawl wikipedia 2>logs`

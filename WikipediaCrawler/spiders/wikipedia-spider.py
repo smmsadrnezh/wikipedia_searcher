@@ -30,7 +30,6 @@ class WikipediaSpider(scrapy.Spider):
         item = {"text": ""}
 
         item["brief"] = content.find_all("p", recursive=False)[0].get_text()
-        print(item["brief"])
 
         for text_block in content.find_all(["h1", "h2", "h3", "h4", "p", "table", "ul", "ol", "blockquote"]):
             item["text"] += text_block.get_text()
