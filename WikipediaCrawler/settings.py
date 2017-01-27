@@ -13,7 +13,8 @@ BOT_NAME = 'WikipediaCrawler'
 
 SPIDER_MODULES = ['WikipediaCrawler.spiders']
 NEWSPIDER_MODULE = 'WikipediaCrawler.spiders'
-
+CLOSESPIDER_ITEMCOUNT = 1000
+CLOSESPIDER_PAGECOUNT = 1000
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'WikipediaCrawler (+http://www.yourdomain.com)'
@@ -58,9 +59,9 @@ ROBOTSTXT_OBEY = True
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
+# EXTENSIONS = {
+   # 'scrapy.extensions.telnet.TelnetConsole': None,
+# }
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html

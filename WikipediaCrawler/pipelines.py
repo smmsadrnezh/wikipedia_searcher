@@ -2,7 +2,12 @@
 import json
 import codecs
 
+from scrapy.exceptions import DropItem
+
+
 class WikipediacrawlerPipeline(object):
+
+
     def __init__(self):
         self.file = codecs.open('DataStore/items.json', 'w', encoding='utf-8')
 

@@ -1,13 +1,13 @@
 import scrapy
 from bs4 import BeautifulSoup
-
+import re
+from urllib import parse
 
 class WikipediaSpider(scrapy.Spider):
     name = 'wikipedia'
 
-    number_of_pages = 1000
-    i = 0
-    out_degree = 10
+    scrape_count = 0
+    OUT_DEGREE = 10
     allowed_domains = ['fa.wikipedia.org']
     start_urls = [
         'https://fa.wikipedia.org/wiki/%D8%B3%D8%B9%D8%AF%DB%8C',
@@ -18,20 +18,12 @@ class WikipediaSpider(scrapy.Spider):
         page = BeautifulSoup(response.text, "lxml")
         content = page.find(id="mw-content-text")
         item = self.scrap_content(page, content)
+        yield item
 
-        yield {
-            'title': item["title"],
-            'infobox': item["infobox"],
-            'brief': item["brief"],
-            'text': item["text"]
-        }
-
-        for link in content.find_all('a'):
-            if (self.i == self.number_of_pages):
-                exit()
-            else:
-                print(self.i)
-                self.i += 1
+        for link in content.find_all('a', limit=self.OUT_DEGREE):
+            url = parse.unquote(link.get("href"))
+            if not bool(re.search("action=edit|[\d۱۲۳۴۵۶۷۸۹۰#:]+", url)):
+                print(url)
                 yield scrapy.Request(response.urljoin(link.get("href")), callback=self.parse)
 
     def scrap_content(self, page, content):
@@ -48,7 +40,10 @@ class WikipediaSpider(scrapy.Spider):
         for text_block in content.find_all(["h1", "h2", "h3", "h4", "p", "table", "ul", "ol", "blockquote"]):
             item["text"] += text_block.get_text()
 
-        item["title"] = page.h1.string
-        item["infobox"] = content.find_all("table", recursive=False)[0].get_text()
+        item["title"] = page.find("h1",id="firstHeading").string
+
+        infobox = content.find_all("table", {"class": "infobox vcard"}, recursive=False)
+        if len(infobox) > 0:
+            item["infobox"] = infobox[0].get_text()
 
         return item
