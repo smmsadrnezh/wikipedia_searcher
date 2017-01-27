@@ -2,17 +2,23 @@ import scrapy
 from bs4 import BeautifulSoup
 import re
 from urllib import parse
+from WikipediaCrawler.settings import set_CLOSESPIDER_ITEMCOUNT, CLOSESPIDER_ITEMCOUNT
 
 
 class WikipediaSpider(scrapy.Spider):
     name = 'wikipedia'
 
-    scrape_count = 0
     OUT_DEGREE = 10
     allowed_domains = ['fa.wikipedia.org']
     start_urls = [
         'https://fa.wikipedia.org/wiki/%D8%B3%D8%B9%D8%AF%DB%8C',
     ]
+
+    def __init__(self, out_degree=OUT_DEGREE, start_urls=start_urls, item_count=CLOSESPIDER_ITEMCOUNT):
+        self.OUT_DEGREE = int(out_degree)
+        if isinstance(start_urls, str):
+            self.start_urls = start_urls.split(",")
+        set_CLOSESPIDER_ITEMCOUNT(int(item_count))
 
     def parse(self, response):
 
@@ -21,7 +27,7 @@ class WikipediaSpider(scrapy.Spider):
         item = self.scrap_content(page, content)
         yield item
 
-        for i in range(self.OUT_DEGREE):
+        for i in range(min(self.OUT_DEGREE, len(item["out_links"]))):
             yield scrapy.Request(response.urljoin(item["out_links"][i]), callback=self.parse)
 
     def scrap_content(self, page, content):
