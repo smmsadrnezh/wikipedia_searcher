@@ -23,19 +23,14 @@ class WikipediaSpider(scrapy.Spider):
         for link in content.find_all('a', limit=self.OUT_DEGREE):
             url = parse.unquote(link.get("href"))
             if not bool(re.search("action=edit|[\d۱۲۳۴۵۶۷۸۹۰#:]+", url)):
-                print(url)
                 yield scrapy.Request(response.urljoin(link.get("href")), callback=self.parse)
 
     def scrap_content(self, page, content):
 
-        item = {"brief": "", "text": ""}
+        item = {"text": ""}
 
-        if content.find(id="toc") is not None:
-            for paragraph in content.find(id="toc").find_previous_siblings("p"):
-                item["brief"] += paragraph.get_text()
-        else:
-            for paragraph in content.find_all("p", recursive=False):
-                item["brief"] += paragraph.get_text()
+        item["brief"] = content.find_all("p", recursive=False)[0].get_text()
+        print(item["brief"])
 
         for text_block in content.find_all(["h1", "h2", "h3", "h4", "p", "table", "ul", "ol", "blockquote"]):
             item["text"] += text_block.get_text()
