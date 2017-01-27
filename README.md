@@ -3,7 +3,7 @@ This is a simple web crawler for persian wikipedia based on scrapy and beautiful
 How to run
 =========
 
-This plugin is based on [Scrapy](#). So install these items with pip.
+This plugin is based on [Scrapy](#). So install these packages with pip.
 
   * scrapy
   * beautifulsoup

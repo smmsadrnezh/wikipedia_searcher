@@ -20,14 +20,12 @@ class WikipediaSpider(scrapy.Spider):
         item = self.scrap_content(page, content)
         yield item
 
-        for link in content.find_all('a', limit=self.OUT_DEGREE):
-            url = parse.unquote(link.get("href"))
-            if not bool(re.search("action=edit|[\d۱۲۳۴۵۶۷۸۹۰#:]+", url)):
-                yield scrapy.Request(response.urljoin(link.get("href")), callback=self.parse)
+        for i in range(self.OUT_DEGREE):
+            yield scrapy.Request(response.urljoin(item["out_links"][i]), callback=self.parse)
 
     def scrap_content(self, page, content):
 
-        item = {"text": ""}
+        item = {"text": "","out_links": []}
 
         item["brief"] = content.find_all("p", recursive=False)[0].get_text()
 
@@ -38,6 +36,14 @@ class WikipediaSpider(scrapy.Spider):
 
         infobox = content.find_all("table", {"class": "infobox vcard"}, recursive=False)
         if len(infobox) > 0:
-            item["infobox"] = infobox[0].get_text()
+            fields = infobox[0].find_all("tr")
+            for field in fields:
+                if field.find("th") and field.find("tr"):
+                    item[field.find("th").get_text()] = field.find("tr").get_text()
+
+        for link in content.find_all('a'):
+            url = parse.unquote(link.get("href"))
+            if not bool(re.search("action=edit|[\d۱۲۳۴۵۶۷۸۹۰#:]+", url)):
+                item["out_links"].append(url)
 
         return item
