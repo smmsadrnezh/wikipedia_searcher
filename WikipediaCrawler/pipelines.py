@@ -21,7 +21,7 @@ class WikipediacrawlerPipeline(object):
         file.write(line)
         file.close()
         self.progress_count += 1
-        self.printProgressBar(self.progress_count, CLOSESPIDER_ITEMCOUNT, prefix='Progress:', suffix='Complete', length=50)
+        # self.printProgressBar(self.progress_count, CLOSESPIDER_ITEMCOUNT, prefix='Progress:', suffix='Complete', length=50)
         return item
 
     def spider_closed(self, spider):

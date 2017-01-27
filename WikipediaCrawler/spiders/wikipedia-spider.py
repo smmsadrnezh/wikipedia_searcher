@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import re
 from urllib import parse
 
+
 class WikipediaSpider(scrapy.Spider):
     name = 'wikipedia'
 
@@ -25,21 +26,21 @@ class WikipediaSpider(scrapy.Spider):
 
     def scrap_content(self, page, content):
 
-        item = {"text": "","out_links": []}
+        item = {"text": "", "out_links": [], "info": {}}
 
         item["brief"] = content.find_all("p", recursive=False)[0].get_text()
 
         for text_block in content.find_all(["h1", "h2", "h3", "h4", "p", "table", "ul", "ol", "blockquote"]):
             item["text"] += text_block.get_text()
 
-        item["title"] = page.find("h1",id="firstHeading").string
+        item["title"] = page.find("h1", id="firstHeading").string
 
         infobox = content.find_all("table", {"class": "infobox vcard"}, recursive=False)
         if len(infobox) > 0:
             fields = infobox[0].find_all("tr")
             for field in fields:
-                if field.find("th") and field.find("tr"):
-                    item[field.find("th").get_text()] = field.find("tr").get_text()
+                if field.find("th") is not None and field.find("td") is not None:
+                    item["info"][field.find("th").get_text()] = field.find("td").get_text()
 
         for link in content.find_all('a'):
             url = parse.unquote(link.get("href"))

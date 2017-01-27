@@ -13,3 +13,15 @@ How to use
 =========
 
 `scrapy crawl wikipedia 2>logs`
+
+TODO
+=========
+
+Crawl:
+
+1. 1009
+
+2. Console UI
+
+3. Graph
+

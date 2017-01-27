@@ -13,8 +13,7 @@ BOT_NAME = 'WikipediaCrawler'
 
 SPIDER_MODULES = ['WikipediaCrawler.spiders']
 NEWSPIDER_MODULE = 'WikipediaCrawler.spiders'
-CLOSESPIDER_ITEMCOUNT = 1000
-CLOSESPIDER_PAGECOUNT = 1000
+CLOSESPIDER_ITEMCOUNT = 100
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'WikipediaCrawler (+http://www.yourdomain.com)'
