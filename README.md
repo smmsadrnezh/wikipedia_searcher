@@ -30,13 +30,6 @@ Crawl:
 
 3. Mutual Information
 
-4. Saving Clusters to Elastisearch
+4. Progress Bar for K-means
 
-5. Progress Bar for K-means
-
-6. Printing Elasticsearch Cluster Addresses
-
-7. Finding best K with maximum L
-
-8. NumPy Sparse Method
- 
+5. Finding best K with maximum L

@@ -115,10 +115,27 @@ def show_sample_urls():
 def data_clustering():
     print(
         """
+        Select task?
+        1) Run K-Means and Add Clusters to ElasticSearch
+        2) Show sample URLs
+        3) Back
+        0) Exit
+        """)
+    selected_task = input()
+    if selected_task in data_clustering_options:
+        data_clustering_options[selected_task]()
+    else:
+        index_operations()
+
+
+def start_kmeans():
+    print(
+        """
         Enter maximum limit for K (-1 for no limit)
         """)
     l = int(input())
     VectorBuild.init(l)
+
 
 def pagerank_calculation():
     pass
@@ -127,6 +144,12 @@ def pagerank_calculation():
 def search():
     pass
 
+
+data_clustering_options = {'0': close,
+                           '1': start_kmeans,
+                           '2': show_sample_urls,
+                           '3': init,
+                           }
 
 crawl_options = {'0': close,
                  '1': default_crawl,

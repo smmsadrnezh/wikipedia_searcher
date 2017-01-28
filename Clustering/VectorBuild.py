@@ -52,6 +52,15 @@ def posting_list_build(title):
                           term_statistics=True, ignore=[400, 404])
 
 
+def add_cluster_to_elasticsearch(title, cluster):
+    es = Elasticsearch()
+    doc = es.search(index="wikipedia", body={"query": {"match": {"title": title}}})
+    item = doc['hits']['hits'][0]
+    return es.update(index=item["_index"], id=item['_id'],
+                     doc_type=item["_type"],
+                     body={"doc": {"cluster": int(cluster)}})
+
+
 def init(l):
     es = Elasticsearch()
     res = es.search(index="wikipedia", size=get_MAX_ITEMCOUNT(), body={"query": {"match_all": {}}},
@@ -75,4 +84,7 @@ def init(l):
         centroids_matrix, _ = kmeans(whitened, int(get_MAX_ITEMCOUNT() / 10), iter=20, thresh=1e-5, check_finite=True)
     else:
         centroids_matrix, _ = kmeans(whitened, l, iter=20, thresh=1e-5, check_finite=True)
-    print(vq(whitened, centroids_matrix)[0])
+
+    clusters = vq(whitened, centroids_matrix)[0]
+    for i, title in enumerate(docs.keys()):
+        add_cluster_to_elasticsearch(title, clusters[i])

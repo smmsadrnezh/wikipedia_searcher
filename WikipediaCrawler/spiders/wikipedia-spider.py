@@ -63,4 +63,6 @@ class WikipediaSpider(scrapy.Spider):
             if not bool(re.search("action=edit|[\d۱۲۳۴۵۶۷۸۹۰#:]+", url)):
                 item["out_links"].append(url)
 
+        item["cluster"] = -1
+        item["pageRank"] = -1
         return item

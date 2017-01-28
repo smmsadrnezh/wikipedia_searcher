@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
 import codecs
-import os
 
 import subprocess
 
