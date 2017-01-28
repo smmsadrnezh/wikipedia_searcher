@@ -13,12 +13,6 @@ BOT_NAME = 'WikipediaCrawler'
 
 SPIDER_MODULES = ['WikipediaCrawler.spiders']
 NEWSPIDER_MODULE = 'WikipediaCrawler.spiders'
-CLOSESPIDER_ITEMCOUNT = 100
-
-
-def set_CLOSESPIDER_ITEMCOUNT(value):
-    global CLOSESPIDER_ITEMCOUNT
-    CLOSESPIDER_ITEMCOUNT = value
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent

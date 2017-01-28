@@ -24,28 +24,19 @@ TODO
 
 Crawl:
 
-1. 1009
+1. Graph
 
-2. 1009 (Progress bar)
+2. Frontier Queue Prioritization
 
-3. 1009 (Manual Configuration)
+3. Mutual Information
 
-4. Graph
+4. Saving Clusters to Elastisearch
 
-5. Frontier Queue Prioritization
+5. Progress Bar for K-means
 
-6. Create Vectors
+6. Printing Elasticsearch Cluster Addresses
 
-8. Mutual Information
+7. Finding best K with maximum L
 
-9. Saving Clusters to Elastisearch
-
-10. Progress Bar for K-means
-
-11. Printing Elasticsearch Cluster Addresses
-
-12. Finding best K with maximum L
-
-13. NumPy Sparse Method
-
-14. 
+8. NumPy Sparse Method
+ 

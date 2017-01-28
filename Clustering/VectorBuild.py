@@ -1,16 +1,18 @@
 from elasticsearch import Elasticsearch
-from WikipediaCrawler.settings import CLOSESPIDER_ITEMCOUNT
-from scipy.cluster.vq import kmeans, kmeans2, whiten, vq
-from numpy import array, shape
+from WikipediaCrawler.pipelines import get_MAX_ITEMCOUNT
+from scipy.cluster.vq import kmeans, whiten, vq
+from scipy.sparse import coo_matrix
 
 docs = {}
 all_terms = set()
 coefficient = {"title": 5, "brief": 2, "text": 1}
 
 
-def vector_build(doc_posting_list):
-    vector = []
-    for term in all_terms:
+def vector_build(doc_posting_list, doc_number):
+    val = []
+    col = []
+    row = []
+    for i, term in enumerate(all_terms):
         count = 0
         if term in doc_posting_list["term_vectors"]["title"]["terms"]:
             count += coefficient["title"] * doc_posting_list["term_vectors"]["title"]["terms"][term]["term_freq"]
@@ -19,7 +21,14 @@ def vector_build(doc_posting_list):
 
         if term in doc_posting_list["term_vectors"]["text"]["terms"]:
             count += coefficient["text"] * doc_posting_list["term_vectors"]["text"]["terms"][term]["term_freq"]
-        vector.append(count)
+
+        val.append(count)
+        col.append(i)
+        row.append(doc_number)
+
+    width = len(all_terms)
+    height = get_MAX_ITEMCOUNT()
+    vector = coo_matrix((val, (col, row)), shape=(width, height))
     return vector
 
 
@@ -45,7 +54,7 @@ def posting_list_build(title):
 
 def init(l):
     es = Elasticsearch()
-    res = es.search(index="wikipedia", size=CLOSESPIDER_ITEMCOUNT, body={"query": {"match_all": {}}},
+    res = es.search(index="wikipedia", size=get_MAX_ITEMCOUNT(), body={"query": {"match_all": {}}},
                     filter_path=['hits.total', 'hits.hits._source.title'])
 
     for hit in res['hits']['hits']:
@@ -56,14 +65,14 @@ def init(l):
     for value in docs.values():
         add_words(value)
 
-    features = []
-    for doc in docs.keys():
-        features.append(vector_build(docs[doc]))
+    features = coo_matrix(([], ([], [])), shape=(len(all_terms), get_MAX_ITEMCOUNT()))
+    for i, doc in enumerate(docs.keys()):
+        features += vector_build(docs[doc], i)
 
-    whitened = whiten(array(features))
+    whitened = whiten(features.toarray())
     centroids_matrix = None
     if l == -1:
-        centroids_matrix, _ = kmeans(whitened, int(CLOSESPIDER_ITEMCOUNT / 10), iter=20, thresh=1e-5, check_finite=True)
+        centroids_matrix, _ = kmeans(whitened, int(get_MAX_ITEMCOUNT() / 10), iter=20, thresh=1e-5, check_finite=True)
     else:
         centroids_matrix, _ = kmeans(whitened, l, iter=20, thresh=1e-5, check_finite=True)
     print(vq(whitened, centroids_matrix)[0])

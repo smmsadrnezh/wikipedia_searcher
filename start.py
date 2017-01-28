@@ -1,6 +1,5 @@
 import sys
 from elasticsearch import Elasticsearch
-# from Clustering.VectorBuild import init
 from Clustering import VectorBuild
 import os
 
