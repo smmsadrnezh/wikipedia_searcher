@@ -43,7 +43,7 @@ def posting_list_build(title):
                           term_statistics=True, ignore=[400, 404])
 
 
-def init():
+def init(l):
     es = Elasticsearch()
     res = es.search(index="wikipedia", size=CLOSESPIDER_ITEMCOUNT, body={"query": {"match_all": {}}},
                     filter_path=['hits.total', 'hits.hits._source.title'])
@@ -61,7 +61,9 @@ def init():
         features.append(vector_build(docs[doc]))
 
     whitened = whiten(array(features))
-    a, distortion = kmeans(whitened, 10, iter=20, thresh=1e-5, check_finite=True)
-    print(vq(whitened, a)[0])
-
-init()
+    centroids_matrix = None
+    if l == -1:
+        centroids_matrix, _ = kmeans(whitened, int(CLOSESPIDER_ITEMCOUNT / 10), iter=20, thresh=1e-5, check_finite=True)
+    else:
+        centroids_matrix, _ = kmeans(whitened, l, iter=20, thresh=1e-5, check_finite=True)
+    print(vq(whitened, centroids_matrix)[0])

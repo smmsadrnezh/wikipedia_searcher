@@ -1,5 +1,7 @@
 import sys
 from elasticsearch import Elasticsearch
+# from Clustering.VectorBuild import init
+from Clustering import VectorBuild
 import os
 
 
@@ -117,7 +119,7 @@ def data_clustering():
         Enter maximum limit for K (-1 for no limit)
         """)
     l = int(input())
-
+    VectorBuild.init(l)
 
 def pagerank_calculation():
     pass
