@@ -34,3 +34,14 @@ Crawl:
 
 6. Create Vectors
 
+7. Connecting K from input to K-means
+
+8. Mutual Information
+
+9. Saving Clusters to Elastisearch
+
+10. Progress Bar for K-means
+
+11. Printing Elasticsearch Cluster Addresses
+
+12. Finding best K with maximum L
