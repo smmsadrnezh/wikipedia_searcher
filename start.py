@@ -1,7 +1,11 @@
 import sys
+
 from elasticsearch import Elasticsearch
 from Clustering import VectorBuild
 import os
+
+search_config = {}
+
 
 def init():
     print(
@@ -157,11 +161,112 @@ def search():
 
 
 def advanced_search():
-    pass
+    print(
+        """
+        Set your search configuration?
+        1) Search...
+        2) Set title
+        3) Set brief
+        4) Set text
+        5) Set cluster
+        6) PageRank Effective
+        7) Back
+        0) Exit
+        """)
+    selected_task = input()
+    if selected_task in advanced_search_options:
+        advanced_search_options[selected_task]()
+    else:
+        advanced_search()
+
+
+def full_search():
+    es = Elasticsearch()
+    search_result = es.search(index="wikipedia", body={"query": {
+        "match": {"title": search_config["title"], "brief": search_config["brief"], "text": search_config["text"],
+                  "cluster": search_config["cluster"]}}})
+
+    print(search_result)
+
+
+def set_title():
+    print(
+        """
+        Enter search:
+        """)
+    search_config["title"] = input()
+    print(
+        """
+        Search term configured successfully.
+        """)
+    search_options['1']()
+
+
+def set_brief():
+    print(
+        """
+        Enter search:
+        """)
+    search_config["brief"] = input()
+    print(
+        """
+        Search term configured successfully.
+        """)
+    search_options['1']()
+
+
+def set_text():
+    print(
+        """
+        Enter search:
+        """)
+    search_config["text"] = input()
+    print(
+        """
+        Search term configured successfully.
+        """)
+    search_options['1']()
+
+
+def set_cluster():
+    print("""
+    Select the cluster to search in:
+    """)
+
+    es = Elasticsearch()
+    res = es.search(index="wikipedia", size=VectorBuild.get_MAX_ITEMCOUNT(), body={"query": {"match_all": {}}},
+                    filter_path=['hits.hits._source.cluster'])
+
+    clusters = set()
+    for cluster in res['hits']['hits']:
+        clusters.add(cluster['_source']['cluster'])
+
+    for cluster in clusters:
+        print(cluster)
+
+    search_config["cluster"] = int(input())
+    print(
+        """
+        Search term configured successfully.
+        """)
+    search_options['1']()
+
+
+def pagerank_effective():
+    print("""
+        Is it necessary to affect PageRanks:
+        1) Back
+        0) Exit
+        """)
+    selected_task = input()
+    if selected_task in coefficient_options:
+        coefficient_options[selected_task]()
+    else:
+        coefficient_options['0']()
 
 
 def change_coefficient():
-    coefficient = []
+    coefficient = {}
 
     print(
         """
@@ -170,12 +275,12 @@ def change_coefficient():
     coefficient["title"] = int(input())
     print(
         """
-        Coefficient for page title?
+        Coefficient for page brief?
         """)
     coefficient["brief"] = int(input())
     print(
         """
-        Coefficient for page title?
+        Coefficient for page text?
         """)
     coefficient["text"] = int(input())
 
@@ -184,17 +289,20 @@ def change_coefficient():
     print(
         """
         Coefficients changed successfully.
-        Select task?
-        1) Back
-        0) Exit
         """)
 
-    selected_task = input()
-    if selected_task in coefficient_options:
-        coefficient_options[selected_task]()
-    else:
-        coefficient_options['0']()
+    coefficient_options['1']()
 
+
+advanced_search_options = {'0': close,
+                           '1': full_search,
+                           '2': set_title,
+                           '3': set_brief,
+                           '4': set_text,
+                           '5': set_cluster,
+                           '6': pagerank_effective,
+                           '7': search,
+                           }
 
 coefficient_options = {'0': close,
                        '1': search,
