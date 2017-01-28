@@ -1,10 +1,11 @@
+import os
 import sys
 
 from elasticsearch import Elasticsearch
-from Clustering import VectorBuild
-import os
 
-search_config = {}
+from Clustering import VectorBuild
+
+search_config = {"title": None, "brief": None, "text": None, "cluster": None}
 
 
 def init():
@@ -182,12 +183,27 @@ def advanced_search():
 
 def full_search():
     es = Elasticsearch()
-    search_result = es.search(index="wikipedia", body={"query": {
-        "match": {"title": search_config["title"], "brief": search_config["brief"], "text": search_config["text"],
-                  "cluster": search_config["cluster"]}}})
 
-    print(search_result)
+    title_dict = brief_dict = text_dict = cluster_dict = {}
 
+    if search_config["title"]:
+        title_dict = {"match": {"title": search_config["title"]}}
+    if search_config["brief"]:
+        brief_dict = {"match": {"brief": search_config["brief"]}}
+    if search_config["text"]:
+        text_dict = {"match": {"text": search_config["text"]}}
+    if search_config["cluster"]:
+        cluster_dict = {"match": {"cluster": search_config["cluster"]}}
+
+    search_results = es.search(index="wikipedia", size=VectorBuild.get_MAX_ITEMCOUNT(),
+                               body={"query": {"bool": {"must": [title_dict, brief_dict, text_dict, cluster_dict]}}},
+                               filter_path=['hits.hits._source.title'])
+
+    if len(search_results) > 0:
+        for search_result in search_results['hits']['hits']:
+            print("\t" + search_result['_source']['title'])
+    else:
+        print("No Result")
 
 def set_title():
     print(
