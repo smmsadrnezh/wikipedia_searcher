@@ -8,6 +8,12 @@ all_terms = set()
 coefficient = {"title": 5, "brief": 2, "text": 1}
 
 
+def set_coefficient(new_coefficient):
+    coefficient["title"] = new_coefficient["title"]
+    coefficient["brief"] = new_coefficient["brief"]
+    coefficient["text"] = new_coefficient["text"]
+
+
 def vector_build(doc_posting_list, doc_number):
     val = []
     col = []

@@ -3,7 +3,6 @@ from elasticsearch import Elasticsearch
 from Clustering import VectorBuild
 import os
 
-
 def init():
     print(
         """
@@ -125,7 +124,7 @@ def data_clustering():
     if selected_task in data_clustering_options:
         data_clustering_options[selected_task]()
     else:
-        index_operations()
+        data_clustering()
 
 
 def start_kmeans():
@@ -142,8 +141,70 @@ def pagerank_calculation():
 
 
 def search():
+    print(
+        """
+        Select task?
+        1) Advanced search
+        2) Change coefficient for different doc fields
+        3) Back
+        0) Exit
+        """)
+    selected_task = input()
+    if selected_task in search_options:
+        search_options[selected_task]()
+    else:
+        search()
+
+
+def advanced_search():
     pass
 
+
+def change_coefficient():
+    coefficient = []
+
+    print(
+        """
+        Coefficient for page title?
+        """)
+    coefficient["title"] = int(input())
+    print(
+        """
+        Coefficient for page title?
+        """)
+    coefficient["brief"] = int(input())
+    print(
+        """
+        Coefficient for page title?
+        """)
+    coefficient["text"] = int(input())
+
+    VectorBuild.set_coefficient(coefficient)
+
+    print(
+        """
+        Coefficients changed successfully.
+        Select task?
+        1) Back
+        0) Exit
+        """)
+
+    selected_task = input()
+    if selected_task in coefficient_options:
+        coefficient_options[selected_task]()
+    else:
+        coefficient_options['0']()
+
+
+coefficient_options = {'0': close,
+                       '1': search,
+                       }
+
+search_options = {'0': close,
+                  '1': advanced_search,
+                  '2': change_coefficient,
+                  '3': init,
+                  }
 
 data_clustering_options = {'0': close,
                            '1': start_kmeans,
