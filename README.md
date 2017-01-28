@@ -8,6 +8,9 @@ This plugin is based on [Scrapy](#). So install these packages with pip.
   * scrapy
   * beautifulsoup
   * requests
+  * scipy
+  * numpy
+  * elasticsearch
 
 How to use
 =========
@@ -21,7 +24,13 @@ Crawl:
 
 1. 1009
 
-2. Console UI
+2. 1009 (Progress bar)
 
-3. Graph
+3. 1009 (Manual Configuration)
+
+4. Graph
+
+5. Frontier Queue Prioritization
+
+6. Create Vectors
 

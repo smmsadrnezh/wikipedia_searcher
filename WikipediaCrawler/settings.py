@@ -13,7 +13,7 @@ BOT_NAME = 'WikipediaCrawler'
 
 SPIDER_MODULES = ['WikipediaCrawler.spiders']
 NEWSPIDER_MODULE = 'WikipediaCrawler.spiders'
-CLOSESPIDER_ITEMCOUNT = 2
+CLOSESPIDER_ITEMCOUNT = 1000
 
 
 def set_CLOSESPIDER_ITEMCOUNT(value):

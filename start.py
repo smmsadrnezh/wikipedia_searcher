@@ -30,7 +30,6 @@ def close():
 def crawl():
     print(
         """
-        Welcome.
         Select task?
         1) Run Crawler with default configuration
         2) Run Crawler with manual configuration
@@ -74,7 +73,6 @@ def manual_crawl():
 def index_operations():
     print(
         """
-        Welcome.
         Select task?
         1) Create index
         2) Delete index
@@ -114,7 +112,11 @@ def show_sample_urls():
 
 
 def data_clustering():
-    pass
+    print(
+        """
+        Enter maximum limit for K (-1 for no limit)
+        """)
+    l = int(input())
 
 
 def pagerank_calculation():

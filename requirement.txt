@@ -1,0 +1,6 @@
+scrapy
+beautifulsoup
+requests
+scipy
+numpy
+elasticsearch
