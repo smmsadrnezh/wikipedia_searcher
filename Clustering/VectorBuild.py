@@ -2,7 +2,7 @@ import colorsys
 import os
 import random
 
-import numpy
+import numpy as np
 from elasticsearch import Elasticsearch
 from matplotlib import pyplot as plt
 from matplotlib.mlab import PCA as mlabPCA
@@ -76,41 +76,17 @@ def add_cluster_to_elasticsearch(title, cluster):
 
 
 def get_colors(num_colors):
-    """
-    Function to generate a list of randomly generated colors
-    The function first generates 256 different colors and then
-    we randomly select the number of colors required from it
-    num_colors        -> Number of colors to generate
-    colors            -> Consists of 256 different colors
-    random_colors     -> Randomly returns required(num_color) colors
-    """
     colors = []
     random_colors = []
-    # Generate 256 different colors and choose num_clors randomly
-    for i in numpy.arange(0., 360., 360. / 256.):
+    for i in np.arange(0., 360., 360. / 256.):
         hue = i / 360.
-        lightness = (50 + numpy.random.rand() * 10) / 100.
-        saturation = (90 + numpy.random.rand() * 10) / 100.
+        lightness = (50 + np.random.rand() * 10) / 100.
+        saturation = (90 + np.random.rand() * 10) / 100.
         colors.append(colorsys.hls_to_rgb(hue, lightness, saturation))
 
     for i in range(0, num_colors):
         random_colors.append(colors[random.randint(0, len(colors) - 1)])
     return random_colors
-
-
-def random_centroid_selector(total_clusters, clusters_plotted):
-    """
-    Function to generate a list of randomly selected
-    centroids to plot on the output png
-    total_clusters        -> Total number of clusters
-    clusters_plotted      -> Number of clusters to plot
-    random_list           -> Contains the index of clusters
-                             to be plotted
-    """
-    random_list = []
-    for i in range(0, clusters_plotted):
-        random_list.append(random.randint(0, total_clusters - 1))
-    return random_list
 
 
 def visualize(kmeansdata, centroid_list, label_list, num_cluster):
@@ -123,43 +99,28 @@ def visualize(kmeansdata, centroid_list, label_list, num_cluster):
     plt.figure()
     plt.xlim([users_2d[:, 0].min() - 3, users_2d[:, 0].max() + 3])
     plt.ylim([users_2d[:, 1].min() - 3, users_2d[:, 1].max() + 3])
-
-    # Plotting 50 clusters only for now
-    # random_list = random_centroid_selector(num_cluster, 50)
-
-    # Plotting only the centroids which were randomly_selected
-    # Centroids are represented as a large 'o' marker
     for i, position in enumerate(centroids_2d):
-        # if i in random_list:
         plt.scatter(centroids_2d[i, 0], centroids_2d[i, 1], marker='o', c=colors[i], s=100)
 
-    # Plotting only the points whose centers were plotted
-    # Points are represented as a small '+' marker
     for i, position in enumerate(label_list):
-        # if position in random_list:
         plt.scatter(users_2d[i, 0], users_2d[i, 1], marker='+', c=colors[position])
 
     filename = "Clustering/clusters"
     i = 0
     while True:
-        if os.path.isfile(filename + str(i) + ".png") == False:
-            # new index found write file and return
-            plt.savefig(filename + str(i) + ".png")
+        path = filename + str(i) + ".png"
+        if os.path.isfile(path) == False:
+            plt.savefig(path)
+            print("file saved as " + path)
             break
         else:
-            # Changing index to next number
             i = i + 1
+
     return
 
 
-# def visualize(whitened, centroids_matrix):
-#     plot(whitened[0, 0], whitened[0, 1], 'ob',
-#          whitened[1, 0], whitened[1, 1], 'or')
-#     plot(centroids_matrix[:, 0], centroids_matrix[:, 1], 'sg', markersize=8)
-#     show()
-
-
-def init(l):
+def init(l, visualize_selection):
+    np.seterr(divide='ignore', invalid='ignore')
     es = Elasticsearch()
     res = es.search(index="wikipedia", size=get_MAX_ITEMCOUNT(), body={"query": {"match_all": {}}},
                     filter_path=['hits.total', 'hits.hits._source.title'])
@@ -184,8 +145,9 @@ def init(l):
         centroids_matrix, _ = kmeans(whitened, l, iter=20, thresh=1e-5, check_finite=True)
 
     clusters = vq(whitened, centroids_matrix)[0]
-    print("start")
-    visualize(whitened, centroids_matrix, clusters, l)
-    print("end")
     for i, title in enumerate(docs.keys()):
         add_cluster_to_elasticsearch(title, clusters[i])
+
+    if visualize_selection == "y":
+        print("\tStart Visualizing...")
+        visualize(whitened, centroids_matrix, clusters, l)

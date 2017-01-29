@@ -65,5 +65,6 @@ class WikipediaSpider(scrapy.Spider):
 
         item["cluster"] = -1
         item["pageRank"] = -1
-        item["refer"] = str(referer).replace("http://fa.wikipedia.org/", "")
+        item["refer"] = parse.unquote(
+            str(referer).replace("https://fa.wikipedia.org", "").replace("http://fa.wikipedia.org", ""))
         return item
