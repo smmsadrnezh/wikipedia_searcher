@@ -197,13 +197,17 @@ def full_search():
 
     search_results = es.search(index="wikipedia", size=VectorBuild.get_MAX_ITEMCOUNT(),
                                body={"query": {"bool": {"must": [title_dict, brief_dict, text_dict, cluster_dict]}}},
-                               filter_path=['hits.hits._source.title'])
+                               filter_path=['hits.hits._source.title', 'hits.hits._source.brief'])
 
     if len(search_results) > 0:
         for search_result in search_results['hits']['hits']:
-            print("\t" + search_result['_source']['title'])
+            print("\t" + "عنوان: " + search_result['_source']['title'])
+            if search_result['_source']['brief']:
+                print("\t" + "خلاصه: " + search_result['_source']['brief'])
+            print("\n")
     else:
         print("No Result")
+
 
 def set_title():
     print(
