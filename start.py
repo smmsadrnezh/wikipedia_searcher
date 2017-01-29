@@ -38,6 +38,7 @@ def crawl():
         Select task?
         1) Run Crawler with default configuration
         2) Run Crawler with manual configuration
+        3) Plot web graph
         3) Back
         0) Exit
         """)
@@ -92,6 +93,10 @@ def index_operations():
         index_operations()
 
 
+def plot_web_graph():
+    pass
+
+
 def create_index():
     es = Elasticsearch()
     path = "DataStore/"
@@ -122,7 +127,8 @@ def data_clustering():
         Select task?
         1) Run K-Means and Add Clusters to ElasticSearch
         2) Show sample URLs
-        3) Back
+        3) Visualize clusters in 2D
+        4) Back
         0) Exit
         """)
     selected_task = input()
@@ -139,6 +145,11 @@ def start_kmeans():
         """)
     l = int(input())
     VectorBuild.init(l)
+
+
+def visualize_clusters():
+    print("You have to run start kmeans first")
+    data_clustering()
 
 
 def pagerank_calculation():
@@ -337,13 +348,15 @@ search_options = {'0': close,
 data_clustering_options = {'0': close,
                            '1': start_kmeans,
                            '2': show_sample_urls,
-                           '3': init,
+                           '3': visualize_clusters,
+                           '4': init
                            }
 
 crawl_options = {'0': close,
                  '1': default_crawl,
                  '2': manual_crawl,
-                 '3': init,
+                 '3': plot_web_graph,
+                 '4': init
                  }
 
 init_options = {'0': close,

@@ -1,8 +1,8 @@
-import scrapy
-from bs4 import BeautifulSoup
 import re
 from urllib import parse
 
+import scrapy
+from bs4 import BeautifulSoup
 from scrapy.exceptions import CloseSpider
 
 from WikipediaCrawler.pipelines import set_MAX_ITEMCOUNT, get_progress_count, get_MAX_ITEMCOUNT
@@ -27,7 +27,7 @@ class WikipediaSpider(scrapy.Spider):
 
         page = BeautifulSoup(response.text, "lxml")
         content = page.find(id="mw-content-text")
-        item = self.scrap_content(page, content)
+        item = self.scrap_content(page, content, response.request.headers.get('Referer', None))
         yield item
 
         if get_progress_count() < get_MAX_ITEMCOUNT():
@@ -36,7 +36,7 @@ class WikipediaSpider(scrapy.Spider):
         else:
             raise CloseSpider()
 
-    def scrap_content(self, page, content):
+    def scrap_content(self, page, content, referer):
 
         item = {"text": "", "out_links": [], "info": {}}
 
@@ -65,4 +65,5 @@ class WikipediaSpider(scrapy.Spider):
 
         item["cluster"] = -1
         item["pageRank"] = -1
+        item["refer"] = str(referer).replace("http://fa.wikipedia.org/", "")
         return item
