@@ -1,4 +1,4 @@
-This program is a simple web crawler, indexer and searcher for [persian wikipedia](http://fa.wikipedia.org/) based on Python3.5.
+This program is a simple web crawler, indexer and searcher for [Persian Wikipedia](http://fa.wikipedia.org/) based on Python3.5 and elasticsearch.
 
 How to run
 =========
