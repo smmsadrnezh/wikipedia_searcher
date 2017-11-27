@@ -1,4 +1,4 @@
-This is a sample web crawler, indexer and searcher for [persian wikipedia](http://fa.wikipedia.org/) based on Python3.5.
+This program is a simple web crawler, indexer and searcher for [persian wikipedia](http://fa.wikipedia.org/) based on Python3.5.
 
 How to run
 =========
@@ -14,11 +14,11 @@ Run elasticsearch service on your computer:
 
 `service elasticsearch start`
 
-Run the program in your console:
+Run the program on your console:
 
 `python3.5 start.py` 
 
-You have to collect your data corpse by choosing the first given option in console. Next you do index operations and data clustering. Finally you have all necessary data to do search in it.
+You have to collect your data corpse by choosing the first given option in the console. Next, you do index operations and data clustering. Finally, you have all necessary data to search for it.
 
 TODO
 =========
